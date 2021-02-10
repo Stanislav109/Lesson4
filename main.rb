@@ -18,8 +18,8 @@ class RailRoad
   end
 
 
-
   def start
+    loop do
     puts "Выберите пункт меню"
     puts "Введите '1' чтобы создать станцию"
     puts "Введите '2' чтобы создать поезд"
@@ -29,8 +29,12 @@ class RailRoad
     puts "Введите '6' чтобы переместить поезд вперед по маршруту"
     puts "Введите '7' чтобы переместить поезд назад по маршруту"
     puts "Введите '8' чтобы посмотреть список станций"
+    puts "Введите '9' чтобы посмотреть список поездов"
+    puts "Введите '10' чтобы посмотреть список маршрутов"
+    puts "Введите '0' чтобы выйти"
     choice = gets.chomp.to_i
-    case choice
+    
+      case choice
       when 1
       create_station
       when 2 
@@ -46,7 +50,14 @@ class RailRoad
       when 7
       move_train_to_previous_station
       when 8
-      show_stations  
+      show_stations
+      when 9
+      show_trains
+      when 10
+      show_all_routes
+      when 0 
+      break    
+      end
     end
   end
 
@@ -55,7 +66,7 @@ class RailRoad
     name = gets.chomp!
     station = Station.new(name)
     stations << station
-    puts "#{stations}"
+    stations.each_with_index {|station, index| puts "#{index+1}. #{station.name}"}
   end
 
   def create_train
@@ -66,28 +77,55 @@ class RailRoad
       if type_of_train == :passenger
       train = Train.new(number_of_train, type_of_train)
       trains << train
-      puts "#{trains}"
       elsif type_of_train == :cargo
       train = Train.new(number_of_train,type_of_train)
-      trains << train
-      puts "#{trains}" 
+      trains << train 
       else
       puts "Вы ввели неправильный тип поезда" 
       end
   end
 
   def create_route
-    puts "Введите начальную станцию"
-    start_station = gets.chomp!
-    puts "Введите конечную станцию"
-    end_station = gets.chomp!
-    route = Route.new(start_station, end_station)
+    stations.each_with_index {|station, index| puts "#{index+1}. #{station.name}"}
+    puts "Введите индекс начальной станции"
+    number_of_ss = gets.chomp!
+    puts "Введите индекс конечной станции"
+    number_of_es = gets.chomp!
+    route = Route.new(stations[number_of_ss.to_i], stations[number_of_es.to_i])
     routes << route
-    puts "#{route}"
+    # routes.each_with_index { |route| puts "начальная #{route.stations[number_of_ss.to_i]} конечная #{route.stations[number_of_es.to_i]}" }
+    # routes.stations.each_with_index { |station,index| puts "#{index+1}. #{station.name}" }
+    routes.each_with_index { |station, index| puts "Маршрут #{index+1}: начальная станция: #{stations[number_of_ss.to_i-1].name} конечная стания: #{stations[number_of_es.to_i-1].name}"}
+    
+    
+
+    
+
+    
+  end
+
+  def show_all_routes
+    routes.each_with_index do |station, index|
+      puts "#{index}: начальная станция : #{station.start_station.name}.  конечная станция: #{station.end_station.name}"
+    end
   end
 
   def add_route_to_train
+    show_trains
+    puts "Выберите индекс поезда"
+    train_choice = gets.chomp!.to_i
 
+    create_route
+    puts "Выберите индекс маршрута"
+    route_choice = gets.chomp!.to_i
+
+    
+    trains[train_choice-1].route = routes[route_choice-1]
+    puts "Поезд № #{trains[train_choice-1].number} назначен на маршрут"
+
+    
+    
+    
   end
 
   def add_wagon_to_train
@@ -98,11 +136,9 @@ class RailRoad
       if type_of_wagon == :passenger
       wagon = PassengerWagon.new(number_of_wagon)
       wagons << wagon
-      puts "#{wagons}"
       elsif type_of_wagon == :cargo
       wagon = CargoWagon.new(number_of_wagon)
-      wagons << wagon
-      puts "#{wagons}" 
+      wagons << wagon 
       else
       puts "Вы ввели неправильный тип вагона" 
       end
@@ -117,7 +153,12 @@ class RailRoad
   end
 
   def show_stations
-    stations.each {|station| puts station.name}
+    # stations.each {|station| puts station.name}
+    stations.each_with_index { |station,index| puts "#{index+1}. #{station.name}" }
+  end
+
+  def show_trains
+    trains.each_with_index { |train,index| puts " #{index+1}: Поезд № #{train.number} Тип #{train.type}" } #trains.each_with_index { |train, index| p "#{index}: #{train.number}  #{train.type}" }           
   end
 
 end
