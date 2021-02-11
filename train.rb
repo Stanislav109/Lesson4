@@ -36,11 +36,11 @@ class Train
 
   def move_next_station
     #пользователь может перемещать поезд по маршруту вперед
-    if self.route.stations[self.route.stations.index(self.station) + 1].nil?
-      puts "Это конечная станция"
-    else
+    # if self.route.stations[self.route.stations.index(self.station) + 1].nil?
+    #   puts "Это конечная станция"
+    # else
     self.station = self.route.stations[self.route.stations.index(self.station) + 1]
-    end
+    # end
   end
 
   def move_previous_station
