@@ -131,23 +131,23 @@ class RailRoad
 
   def add_wagon_to_train
     puts "Выберите тип вагона - 'passenger' или 'cargo'"
-    type_of_wagon = gets.to_sym
+    type_of_wagon = gets.chomp!.to_sym
     puts "Введите номер вагона"
     number_of_wagon = gets.to_i
-    wagons << Wagon.new(number_of_wagon,type_of_wagon)
-    puts "Вагон номер #{number_of_wagon} добавлен"
+    # wagons << Wagon.new(number_of_wagon,type_of_wagon)
+    # puts "Вагон номер #{number_of_wagon} добавлен"
 
-      # if type_of_wagon == :passenger
-      # wagon = PassengerWagon.new(number_of_wagon,type_of_wagon)
-      # wagons << wagon
-      # puts "Вагон номер #{number_of_wagon} добавлен"
-      # elsif type_of_wagon == :cargo
-      # wagon = CargoWagon.new(number_of_wagon,type_of_wagon)
-      # wagons << wagon 
-      # puts "Вагон номер #{number_of_wagon} добавлен"
-      # else
-      # puts "Вы ввели неправильный тип вагона" 
-      # end
+    if type_of_wagon == :passenger
+      wagon = PassengerWagon.new(number_of_wagon,type_of_wagon)
+      wagons << wagon
+      puts "Вагон номер #{number_of_wagon} добавлен"
+    elsif type_of_wagon == :cargo
+      wagon = CargoWagon.new(number_of_wagon,type_of_wagon)
+      wagons << wagon 
+      puts "Вагон номер #{number_of_wagon} добавлен"
+    else
+      puts "Вы ввели неправильный тип вагона" 
+    end
   end
 
   def move_train_to_next_station
