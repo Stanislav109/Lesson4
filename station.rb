@@ -7,15 +7,7 @@ class Station
     @trains = []
   end
 
-  def show_trains_by_type(type)
-    #пользователь может смотреть типы поездов на станции
-    self.trains.each do |train|
-      if train.type == type
-        puts train
-      end
-    end
-  end
-
+  
   protected
 
   def get_train(train)

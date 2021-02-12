@@ -8,13 +8,12 @@ require_relative 'wagon_pass'
 require_relative 'wagon_cargo'
 
 class RailRoad
-  attr_reader :stations, :trains, :routes, :wagons 
+  attr_reader :stations, :trains, :routes 
 
   def initialize 
     @stations = []
     @trains = []
     @routes = []
-    @wagons = []
   end
 
   def start
@@ -65,15 +64,14 @@ class RailRoad
     @stations << Station.new('Kursk')
     @stations << Station.new('Orel')
     @stations << Station.new('Moskow')
+    
     @routes << Route.new(@stations[0], @stations[1])
     
     @trains << Train.new(123, 'passenger')
     @trains << Train.new(223, 'cargo')
     @trains << Train.new(124, 'passenger')
     @trains << Train.new(224, 'cargo')
-
-    @wagons << Wagon.new(555, 'cargo')
-    
+        
   end
 
     private
@@ -90,7 +88,7 @@ class RailRoad
     puts "Выберите тип поезда - 'passenger' или 'cargo'"
     type_of_train = gets.chomp!.to_sym
     puts "Введите номер поезда"
-    number_of_train = gets.chomp!
+    number_of_train = gets.to_i
     if type_of_train == :passenger
       train = Train.new(number_of_train, type_of_train)
       trains << train
@@ -130,21 +128,34 @@ class RailRoad
  end
 
   def add_wagon_to_train
+    show_trains
+    puts "Выберите индекс поезда"
+    train_choice = gets.chomp!.to_i 
     puts "Выберите тип вагона - 'passenger' или 'cargo'"
-    type_of_wagon = gets.chomp!.to_sym
+    wagon_type = gets.chomp!.to_sym
     puts "Введите номер вагона"
-    number_of_wagon = gets.to_i
-    # wagons << Wagon.new(number_of_wagon,type_of_wagon)
-    # puts "Вагон номер #{number_of_wagon} добавлен"
+    wagon_number = gets.to_i
+    
+    if wagon_type == :passenger
+      wagon = PassengerWagon.new(wagon_number,wagon_type)
 
-    if type_of_wagon == :passenger
-      wagon = PassengerWagon.new(number_of_wagon,type_of_wagon)
-      wagons << wagon
-      puts "Вагон номер #{number_of_wagon} добавлен"
-    elsif type_of_wagon == :cargo
-      wagon = CargoWagon.new(number_of_wagon,type_of_wagon)
-      wagons << wagon 
-      puts "Вагон номер #{number_of_wagon} добавлен"
+      if wagon.wagon_type == trains[train_choice-1].type
+        trains[train_choice-1].add_wagons(wagon)
+        puts "Вагон номер #{wagon_number} добавлен" 
+      else
+        puts "Тип поезда и тип вагона не совпадают"
+      end
+      
+    elsif wagon_type == :cargo
+      wagon = CargoWagon.new(wagon_number,wagon_type)
+
+      if wagon.wagon_type == trains[train_choice-1].type
+        trains[train_choice-1].add_wagons(wagon)
+        puts "Вагон номер #{wagon_number} добавлен" 
+      else
+        puts "Тип поезда и тип вагона не совпадают"
+      end
+      
     else
       puts "Вы ввели неправильный тип вагона" 
     end
@@ -153,7 +164,7 @@ class RailRoad
   def move_train_to_next_station
     show_trains
     puts "Выберите индекс поезда"
-    train_choice = gets.to_i 
+    train_choice = gets.chomp!.to_i 
     trains[train_choice-1].move_next_station
     puts "#{trains[train_choice-1].station.name}"
   end
@@ -161,14 +172,13 @@ class RailRoad
   def move_train_to_previous_station
     show_trains
     puts "Выберите индекс поезда"
-    train_choice = gets.to_i 
+    train_choice = gets.chomp!.to_i 
     trains[train_choice-1].move_previous_station
     puts "#{trains[train_choice-1].station.name}"
     
   end
 
   def show_stations
-    # stations.each {|station| puts station.name}
     stations.each_with_index { |station,index| puts "#{index+1}. #{station.name}" }
   end
 
@@ -177,6 +187,6 @@ class RailRoad
   end
 end
 
-raiload = RailRoad.new
-raiload.seed
-raiload.start
+railroad = RailRoad.new
+railroad.seed
+railroad.start
